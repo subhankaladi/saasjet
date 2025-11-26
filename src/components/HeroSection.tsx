@@ -1,0 +1,38 @@
+import React from 'react'
+import { Button } from './ui/button'
+import { ArrowRight } from 'lucide-react'
+import Link from 'next/link'
+
+const HeroSection = () => {
+  return (
+    <>
+      {/* HERO */}
+      <section className="max-w-5xl mx-auto px-6 pt-32 pb-24 text-center mt-20">
+        <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
+          Build SaaS Faster with <span className="linear-gradient">SaaSJet</span>
+        </h1>
+        <p className="text-lg text-white/60 max-w-xl mx-auto mb-8">
+          A modern, open-source SaaS starter kit with authentication,
+          dashboard UI, billing, and everything you need to launch your micro-SaaS.
+        </p>
+
+        <div className="flex justify-center gap-4">
+          <Link
+            href="https://github.com/hasnainxdev/saasjet"
+            target="_blank"
+          >
+            <Button className="bg-white text-black hover:bg-white/90 font-medium px-6 py-5 rounded-xl cursor-pointer">
+              Get Started <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </Link>
+
+          <Button variant="outline" className="border-white/20 transition-colors duration-200 backdrop-blur-md rounded-xl px-6 py-5 cursor-pointer">
+            View Docs
+          </Button>
+        </div>
+      </section>
+    </>
+  )
+}
+
+export default HeroSection
