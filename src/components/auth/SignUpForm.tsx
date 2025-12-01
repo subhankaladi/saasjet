@@ -4,10 +4,10 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
+import { signUp } from "@/lib/auth-client";
 
 const SignUpSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters"),
@@ -19,6 +19,7 @@ type SignUpValues = z.infer<typeof SignUpSchema>;
 
 export function SignUpForm() {
     const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const router = useRouter()
 
     const {
@@ -37,23 +38,28 @@ export function SignUpForm() {
     const onSubmit = async (data: SignUpValues) => {
         try {
             setLoading(true);
+            setErrorMessage("");
 
-            const res = await fetch("/api/auth/register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
+            // Use Better Auth sign-up method
+            const { data: authData, error } = await signUp.email({
+                email: data.email,
+                password: data.password,
+                name: data.name,
             });
 
-            if (!res.ok) {
-                console.log("Registration failed");
+            if (error) {
+                setErrorMessage(error.message || "Sign up failed");
+                console.error("Sign up error:", error);
                 return;
             }
 
-            router.push("/dashboard")
+            // Success! User is created and automatically logged in
+            console.log("Registered successfully!", authData.user);
+            router.push("/sign-in");
 
-            console.log("Registered successfully!");
-        } catch (error) {
+        } catch (error: any) {
             console.error("Signup Error:", error);
+            setErrorMessage(error.message || "An unexpected error occurred");
         } finally {
             setLoading(false);
         }
@@ -106,6 +112,9 @@ export function SignUpForm() {
             >
                 {loading ? "Creating..." : "Create Account"}
             </Button>
+            {errorMessage && (
+                <p className="text-red-500 text-sm text-center">{errorMessage}</p>
+            )}
         </form>
     );
 }

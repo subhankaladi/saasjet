@@ -1,14 +1,23 @@
 "use client";
 
-import { Search, Bell, User } from "lucide-react";
+import { Bell, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
-import { signOut, useSession } from "../../lib/auth-client";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import { signOut, useSession } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 export const Topbar = () => {
 
   const { data: session } = useSession();
+
+  const router = useRouter();
+
+
+  const handleSignOut = async () => {
+    await signOut()
+    router.push("/sign-in");
+  }
 
   return (
     <header className="h-16 border-b border-white/10 bg-black/50 backdrop-blur-sm sticky top-0 z-30">
@@ -43,7 +52,7 @@ export const Topbar = () => {
                 {session?.user.email || "user@example.com"}
               </DropdownMenuLabel>
               <DropdownMenuItem>
-                <Button onClick={() => signOut()} className="hover:bg-[#0D0D0D]">Sign Out</Button>
+                <Button onClick={() => handleSignOut()} className="hover:bg-[#0D0D0D]">Sign Out</Button>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

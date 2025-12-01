@@ -16,10 +16,10 @@ export function SignInForm() {
         e.preventDefault();
         setLoading(true);
 
-        // Sign in using Better Auth's email/password
         const res = await signIn.email({
             email,
             password,
+            rememberMe: true,
             callbackURL: "/dashboard",
         });
 

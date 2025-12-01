@@ -8,8 +8,8 @@ const HeroSection = () => {
     <>
       {/* HERO */}
       <section className="max-w-5xl mx-auto px-6 pt-32 pb-24 text-center mt-20">
-        <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
-          Build SaaS Faster with <span className="linear-gradient">SaaSJet</span>
+        <h1 className="text-4xl md:text-6xl font-bold leading-[1.20] tracking-tight mb-6">
+          Build SaaS Apps Faster <br /><span className="linear-gradient">with SaaSJet</span>
         </h1>
         <p className="text-lg text-white/60 max-w-xl mx-auto mb-8">
           A modern, open-source SaaS starter kit with authentication,
@@ -26,9 +26,9 @@ const HeroSection = () => {
             </Button>
           </Link>
 
-          <Button variant="outline" className="border-white/20 transition-colors duration-200 backdrop-blur-md rounded-xl px-6 py-5 cursor-pointer">
+          {/* <Button variant="outline" className="border-white/20 transition-colors duration-200 backdrop-blur-md rounded-xl px-6 py-5 cursor-pointer">
             View Docs
-          </Button>
+          </Button> */}
         </div>
       </section>
     </>
