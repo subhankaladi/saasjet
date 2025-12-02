@@ -1,8 +1,22 @@
+"use client";
+
 import { Card, CardContent } from './ui/card'
 import { Button } from './ui/button'
 import { pricingPlans } from '@/app/constants/constant'
+import { useSession } from '@/lib/auth-client'
 
 const PricingSection = () => {
+    const { data: session } = useSession()
+
+    async function handleCheckout(plan: string) {
+        const res = await fetch("/api/checkout", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId: session?.user.id, plan: plan.toLowerCase() }),
+        });
+        const data = await res.json();
+        if (data.url) window.location.href = data.url;
+    }
 
     return (
         <section className="max-w-6xl mx-auto px-6 py-24">
@@ -19,7 +33,7 @@ const PricingSection = () => {
                                     <li key={featureIndex}>✔ {feature}</li>
                                 ))}
                             </ul>
-                            <Button className="w-full bg-white text-black hover:bg-white/90 rounded-xl">
+                            <Button onClick={() => handleCheckout(plan.name)} disabled={plan.name === "Free"} className="w-full bg-white text-black hover:bg-white/90 rounded-xl cursor-pointer">
                                 {plan.buttonText}
                             </Button>
                         </CardContent>

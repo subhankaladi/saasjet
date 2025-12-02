@@ -7,11 +7,7 @@ import { signOut, useSession } from "@/lib/auth-client";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const {
-    data: session } = useSession()
-
-
-  console.log(session?.user);
+  const { data: session } = useSession()
 
 
   return (
