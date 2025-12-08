@@ -9,6 +9,14 @@ export const auth = betterAuth({
     provider: "postgresql"
   }),
 
+  callbacks: {
+    session: async ({ session, user }: any) => {
+      // attach custom fields to session.user
+      session.user.stripeCustomerId = user.stripeCustomerId;
+      return session;
+    },
+  },
+
   emailAndPassword: {
     enabled: true,
   },
