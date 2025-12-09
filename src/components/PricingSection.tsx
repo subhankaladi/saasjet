@@ -3,20 +3,28 @@ import { Card, CardContent } from './ui/card'
 import { Button } from './ui/button'
 import { pricingPlans } from '@/app/constants/constant'
 import { useSession } from '@/lib/auth-client'
+import { useEffect, useState } from 'react';
 
 // we're extending the Session user type to include stripeCustomerId
 interface UserWithStripe {
+    name: string;
+    email: string;
+    id: string;
     stripeCustomerId?: string;
+    subscriptionPlan: string;
 }
 
 
 const PricingSection = () => {
+    const [fullUserData, setFullUserData] = useState<UserWithStripe | null>(null)
     const { data: session } = useSession()
 
-    console.log(session?.user);
+    const currentPlan = fullUserData?.subscriptionPlan
 
-    // Check if user is a paid customer
-    const isPaidUser = (session?.user as UserWithStripe)?.stripeCustomerId ? true : false;
+    const isFreeUser = currentPlan?.toLowerCase() === "free";
+    const isProUser = currentPlan?.toLowerCase() === "pro";
+    const isLifetimeUser = currentPlan?.toLowerCase() === "lifetime";
+
 
     async function handleCheckout(plan: string) {
         const res = await fetch("/api/checkout", {
@@ -38,14 +46,46 @@ const PricingSection = () => {
         if (data.url) window.location.href = data.url;
     }
 
+    useEffect(() => {
+
+        if (!session?.user.id) return;
+
+        const fetchFullUser = async () => {
+            const res = await fetch("/api/auth/get-full-user", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userId: session?.user.id })
+            })
+
+            if (!res.ok) {
+                console.log("ERROR: fetching full user data", res.body);
+            }
+
+            const data = await res.json()
+
+            setFullUserData(data.user)
+        }
+
+        fetchFullUser()
+    }, [session?.user])
+
     return (
         <section className="max-w-6xl mx-auto px-6 py-24">
             <h2 className="text-3xl font-semibold text-center mb-16">Simple Pricing</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {pricingPlans.map((plan, index) => {
-                    const isFree = plan.name === "Free";
-                    const isDisabled = isFree || isPaidUser;
+                    const isFreePlan = plan.name === "Free";
+                    const isProPlan = plan.name === "Pro";
+                    const isLifetimePlan = plan.name === "Lifetime";
 
+                    // Disable button based on user state
+                    const disableCheckout =
+                        isLifetimeUser ||                             // lifetime users can't buy anything
+                        (isProUser && !isProPlan) ||                  // pro users can manage only their own plan
+                        (isFreeUser && isFreePlan);                   // free users can't buy free plan again
+
+                    const showManageButton =
+                        isProUser && isProPlan;
                     return (
                         <Card key={index} className={`${plan.cardStyle} backdrop-blur-xl rounded-2xl`}>
                             <CardContent className="p-8">
@@ -56,7 +96,15 @@ const PricingSection = () => {
                                         <li key={featureIndex}>✔ {feature}</li>
                                     ))}
                                 </ul>
-                                {isPaidUser && !isFree ? (
+                                {/* LIFETIME USER VIEW */}
+                                {isLifetimeUser ? (
+                                    <Button
+                                        disabled
+                                        className="w-full bg-white text-black rounded-xl opacity-70 cursor-not-allowed"
+                                    >
+                                        Lifetime Access
+                                    </Button>
+                                ) : showManageButton ? (
                                     <Button
                                         onClick={handleManageSubscription}
                                         className="w-full bg-white text-black hover:bg-white/90 rounded-xl cursor-pointer"
@@ -66,13 +114,15 @@ const PricingSection = () => {
                                 ) : (
                                     <Button
                                         onClick={() => handleCheckout(plan.name)}
-                                        disabled={isDisabled}
-                                        className="w-full bg-white text-black hover:bg-white/90 rounded-xl cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                                        disabled={disableCheckout}
+                                        className="w-full bg-white text-black hover:bg-white/90 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                                     >
                                         {plan.buttonText}
                                     </Button>
                                 )}
-                                {isPaidUser && !isFree && (
+
+                                {/* Only for Pro plan when user is Pro */}
+                                {showManageButton && (
                                     <p className="text-white/60 text-sm text-center mt-2">
                                         Cancel or change your plan
                                     </p>

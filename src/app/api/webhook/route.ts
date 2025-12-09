@@ -2,13 +2,19 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import prisma from "@/lib/prisma";
 
-export const config = {
-    api: {
-        bodyParser: false, // raw body needed for signature validation
-    },
-};
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+export const preferredRegion = "auto";
+export const maxDuration = 60;
+export const bodyParser = false;  // IMPORTANT for Stripe signature validation
+
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2025-11-17.clover" });
+
+function isSubscriptionInvoice(data: any) {
+    return !!data.subscription;
+}
 
 export async function POST(req: Request) {
     const body = await req.text();
@@ -48,6 +54,7 @@ export async function POST(req: Request) {
             }
 
             case "invoice.paid": {
+                if (!isSubscriptionInvoice(data)) break;
                 const subscription = await stripe.subscriptions.retrieve(data.subscription);
                 await updateUserSubscription(subscription.customer as string, subscription);
                 break;
@@ -74,12 +81,16 @@ async function updateUserSubscription(customerId: string, subscription: any) {
         ? "pro"
         : "unknown";
 
+    const periodEnd = subscription.current_period_end
+        ? new Date(Number(subscription.current_period_end) * 1000)
+        : null;
+
     await prisma.user.updateMany({
         where: { stripeCustomerId: customerId },
         data: {
             subscriptionStatus: subscription.status,
             subscriptionPlan: plan,
-            currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+            currentPeriodEnd: periodEnd,
         },
     });
 }
