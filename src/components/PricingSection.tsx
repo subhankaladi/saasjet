@@ -20,13 +20,16 @@ const PricingSection = () => {
     const { data: session } = useSession()
 
     const currentPlan = fullUserData?.subscriptionPlan
-
     const isFreeUser = currentPlan?.toLowerCase() === "free";
     const isProUser = currentPlan?.toLowerCase() === "pro";
     const isLifetimeUser = currentPlan?.toLowerCase() === "lifetime";
 
 
     async function handleCheckout(plan: string) {
+        if (!session?.user) {
+            alert("Not LoggedIn Yet!")
+        }
+
         const res = await fetch("/api/checkout", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -37,6 +40,9 @@ const PricingSection = () => {
     }
 
     async function handleManageSubscription() {
+        if (!session?.user) {
+            alert("Not LoggedIn Yet!")
+        }
         const res = await fetch("/api/manage-subscription", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -51,6 +57,10 @@ const PricingSection = () => {
         if (!session?.user.id) return;
 
         const fetchFullUser = async () => {
+            if (!session?.user) {
+                alert("Not LoggedIn Yet!")
+            }
+
             const res = await fetch("/api/auth/get-full-user", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
