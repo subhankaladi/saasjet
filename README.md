@@ -4,7 +4,7 @@
 
 We built SaaSJet because most boilerplates either drown you in unnecessary complexity (like forced multi-tenancy or enterprise-scale features) or leave critical pieces missing. This one focuses on what actually matters for indie hackers and solo founders shipping a paid product: secure auth, reliable billing, a polished dashboard, and a solid foundation you can deploy today. No upsell to a "pro" version everything here is free and open-source under MIT.
 
-[screenshots]()
+![saas-jet home](/saasjet-home.png)
 
 ## Why SaaSJet Stands Out
 
