@@ -5,7 +5,7 @@ import { Menu, X, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-import { navigation } from "@/app/constants/constant";
+import { navigation } from "@/constants/constant";
 
 export const Sidebar = () => {
   const path = usePathname();

@@ -7,6 +7,8 @@ const ForgotSchema = z.object({
     email: z.string().email("Invalid email"),
 });
 
+
+//🟢 It is Not Coomplete Yet but it is Coming Soon if you want to add own functionlity its up to you!
 export async function POST(req: Request) {
     try {
         const body = await req.json();
@@ -24,7 +26,7 @@ export async function POST(req: Request) {
 
         const token = crypto.randomUUID();
 
-        // TODO: Store token in database and send reset email
+        // 🔴 TODO: Store token in database and send reset email
         // await prisma.passwordResetToken.create({
         //     data: {
         //         email,

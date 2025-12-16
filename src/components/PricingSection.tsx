@@ -1,7 +1,7 @@
 "use client";
 import { Card, CardContent } from './ui/card'
 import { Button } from './ui/button'
-import { pricingPlans } from '@/app/constants/constant'
+import { pricingPlans } from '@/constants/constant'
 import { useSession } from '@/lib/auth-client'
 import { useEffect, useState } from 'react';
 
@@ -76,9 +76,8 @@ const PricingSection = () => {
                 {pricingPlans.map((plan, index) => {
                     const isFreePlan = plan.name === "Free";
                     const isProPlan = plan.name === "Pro";
-                    const isLifetimePlan = plan.name === "Lifetime";
 
-                    // Disable button based on user state
+                    // this is just a starting point its up to you as per your stripe billings logic
                     const disableCheckout =
                         isLifetimeUser ||                             // lifetime users can't buy anything
                         (isProUser && !isProPlan) ||                  // pro users can manage only their own plan

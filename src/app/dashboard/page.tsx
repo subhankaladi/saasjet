@@ -5,7 +5,7 @@ import { Bell, DollarSign, Users, RefreshCcw, RotateCcw } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from "recharts";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { activities, dummyData } from "@/app/constants/constant";
+import { activities, dummyData } from "@/constants/constant";
 
 export default function DashboardHome() {
   return (

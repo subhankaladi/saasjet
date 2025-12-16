@@ -37,9 +37,11 @@ export async function POST(req: Request) {
     try {
         switch (event.type) {
             case "checkout.session.completed": {
+                // for subscriptions payment
                 if (data.mode === "subscription") {
                     const subscription = await stripe.subscriptions.retrieve(data.subscription);
                     await updateUserSubscription(subscription.customer as string, subscription);
+                    // and it is for lifetime payment!
                 } else if (data.mode === "payment") {
                     await prisma.user.update({
                         where: { stripeCustomerId: data.customer },
@@ -53,6 +55,7 @@ export async function POST(req: Request) {
                 break;
             }
 
+            // it is not hard at all simply checking wheather a new subscription invoice is paid or not
             case "invoice.paid": {
                 if (!isSubscriptionInvoice(data)) break;
                 const subscription = await stripe.subscriptions.retrieve(data.subscription);
@@ -90,7 +93,7 @@ async function updateUserSubscription(customerId: string, subscription: any) {
         data: {
             subscriptionStatus: subscription.status,
             subscriptionPlan: plan,
-            currentPeriodEnd: periodEnd,
+            currentPeriodEnd: periodEnd, // this might not work consider testing before real payments or maybe user can mange subscriptions from portal access via direct url
         },
     });
 }

@@ -11,7 +11,7 @@ const FeaturesSection = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {[
-                        "Authentication (Google, GitHub, Email)",
+                        "Better-Auth (Google, GitHub, Email)",
                         "Prisma + PostgreSQL Integration",
                         "Beautiful Dashboard UI",
                         "Billing Ready (Stripe)",
