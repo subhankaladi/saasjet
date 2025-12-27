@@ -6,8 +6,21 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from "recharts";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { activities, dummyData } from "@/constants/constant";
+import { useSession } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function DashboardHome() {
+
+  const { data: session } = useSession()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (!session?.user) {
+      router.push('/sign-in')
+    }
+  }, [session?.user])
+
   return (
     <div className="space-y-8">
       {/* Top Section */}

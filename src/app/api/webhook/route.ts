@@ -93,7 +93,7 @@ async function updateUserSubscription(customerId: string, subscription: any) {
         data: {
             subscriptionStatus: subscription.status,
             subscriptionPlan: plan,
-            currentPeriodEnd: periodEnd, // this might not work consider testing before real payments or maybe user can mange subscriptions from portal access via direct url
+            currentPeriodEnd: periodEnd, // this might not work consider testing before real payments or alternatively user can mange subscriptions from portal access via direct url
         },
     });
 }
